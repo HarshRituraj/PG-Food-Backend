@@ -42,13 +42,20 @@ jobs:
             -Dsonar.pullrequest.branch=${{ github.head_ref }} \
             -Dsonar.pullrequest.base=${{ github.base_ref }}
 
+      - name: Install xmllint
+        run: sudo apt-get update && sudo apt-get install -y libxml2-utils
+
       - name: Extract overall coverage from JaCoCo
         id: coverage
         run: |
-          COVERAGE=$(xmllint --xpath "string(//report/counter[@type='LINE']/@covered)" target/site/jacoco/jacoco.xml)
+          COVERED=$(xmllint --xpath "string(//report/counter[@type='LINE']/@covered)" target/site/jacoco/jacoco.xml)
           MISSED=$(xmllint --xpath "string(//report/counter[@type='LINE']/@missed)" target/site/jacoco/jacoco.xml)
-          TOTAL=$((COVERAGE + MISSED))
-          PERCENT=$((100 * COVERAGE / TOTAL))
+          TOTAL=$((COVERED + MISSED))
+          if [ "$TOTAL" -eq 0 ]; then
+            PERCENT=0
+          else
+            PERCENT=$((100 * COVERED / TOTAL))
+          fi
           echo "Coverage is ${PERCENT}%"
           echo "percent=${PERCENT}" >> $GITHUB_OUTPUT
 
