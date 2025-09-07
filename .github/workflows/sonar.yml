@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ "main" ]
 
+permissions:
+  pull-requests: write   # 👈 allow commenting on PRs
+  contents: read
+
 jobs:
   sonar:
     runs-on: ubuntu-latest
