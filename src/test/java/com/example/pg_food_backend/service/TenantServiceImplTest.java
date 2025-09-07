@@ -2,7 +2,6 @@ package com.example.pg_food_backend.service;
 
 import com.example.pg_food_backend.entity.Tenant;
 import com.example.pg_food_backend.repository.TenantRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
