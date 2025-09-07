@@ -3,6 +3,12 @@ name: SonarQube Analysis
 on:
   push:
     branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  pull-requests: write   # 👈 allow commenting on PRs
+  contents: read
 
 jobs:
   sonar:
@@ -35,4 +41,31 @@ jobs:
           mvn -B clean verify sonar:sonar \
             -Dsonar.projectKey=HarshRituraj_PG-Food-Backend \
             -Dsonar.organization=harshrituraj \
-            -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.pullrequest.key=${{ github.event.pull_request.number }} \
+            -Dsonar.pullrequest.branch=${{ github.head_ref }} \
+            -Dsonar.pullrequest.base=${{ github.base_ref }}
+
+      - name: Install xmllint
+        run: sudo apt-get update && sudo apt-get install -y libxml2-utils
+
+      - name: Extract overall coverage from JaCoCo
+        id: coverage
+        run: |
+          COVERED=$(xmllint --xpath "string(//report/counter[@type='LINE']/@covered)" target/site/jacoco/jacoco.xml)
+          MISSED=$(xmllint --xpath "string(//report/counter[@type='LINE']/@missed)" target/site/jacoco/jacoco.xml)
+          TOTAL=$((COVERED + MISSED))
+          if [ "$TOTAL" -eq 0 ]; then
+            PERCENT=0
+          else
+            PERCENT=$((100 * COVERED / TOTAL))
+          fi
+          echo "Coverage is ${PERCENT}%"
+          echo "percent=${PERCENT}" >> $GITHUB_OUTPUT
+
+      - name: Comment PR with overall coverage
+        if: github.event_name == 'pull_request'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          message: |
+            ✅ Overall Coverage: **${{ steps.coverage.outputs.percent }}%**
