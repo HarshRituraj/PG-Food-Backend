@@ -1,6 +1,6 @@
 run: mvn clean verify sonar:sonar \
-  -Dsonar.projectKey=PG-Food-Backend \
-  -Dsonar.organization=HarshRituraj \
+  -Dsonar.projectKey=HarshRituraj_PG-Food-Backend \
+  -Dsonar.organization=harshrituraj \
   -Dsonar.host.url=https://sonarcloud.io \
   -Dsonar.pullrequest.key=${{ github.event.pull_request.number }} \
   -Dsonar.pullrequest.branch=${{ github.head_ref }} \

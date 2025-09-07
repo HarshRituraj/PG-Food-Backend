@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+
 import java.util.Date;
 
 @Entity
@@ -16,14 +17,17 @@ public class Tenant {
     private String response;
     private Date date;
 
+    private String name;
+
     public Tenant() {
     }
 
-    public Tenant(long tenantId, int roomNo, String response, Date date) {
+    public Tenant(long tenantId, int roomNo, String response, Date date, String name) {
         this.tenantId = tenantId;
         this.roomNo = roomNo;
         this.response = response;
         this.date = date;
+        this.name = name;
     }
 
     public long getTenantId() {
@@ -58,6 +62,14 @@ public class Tenant {
         this.date = date;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public String toString() {
         return "Tenant{" +
@@ -65,6 +77,7 @@ public class Tenant {
                 ", roomNo=" + roomNo +
                 ", response='" + response + '\'' +
                 ", date=" + date +
+                ", name=" + name +
                 '}';
     }
 }
